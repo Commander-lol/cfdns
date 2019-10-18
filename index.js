@@ -21,14 +21,15 @@ async function getRecord(zone_id, domain, opts) {
 	return json.result[0]
 }
 
-async function setRecordIp(zone_id, record, ip, opts) {
+async function setRecordIp(zone_id, record, ip, opts, ctx = {}) {
 	const url = gurl(`zones/${ zone_id }/dns_records/${ record.id }`)
 	const method = 'PUT'
 	const json = {
 		type: 'A',
 		name: record.name,
 		content: ip,
-		proxies: true,
+		proxied: true,
+		...ctx,
 	}
 
 	return request(url, {
@@ -38,7 +39,7 @@ async function setRecordIp(zone_id, record, ip, opts) {
 	})
 }
 
-async function createRecord(zone_id, domain, ip, opts) {
+async function createRecord(zone_id, domain, ip, opts, ctx = {}) {
 	const url = gurl(`zones/${ zone_id }/dns_records`)
 	const method = 'POST'
 	const json = {
@@ -46,6 +47,7 @@ async function createRecord(zone_id, domain, ip, opts) {
 		name: domain,
 		content: ip,
 		proxies: true,
+		...ctx,
 	}
 
 	return request(url, {
@@ -70,18 +72,18 @@ async function main() {
 	console.log('[CFDNS] Using IP %s for all domains', ip)
 
 	for (const entry of hosts) {
-		const { domain } = entry
-		const record = await getRecord(zone_id, domain, requestOpts)
+		const { name } = entry
+		const record = await getRecord(zone_id, name, requestOpts)
 		if (record) {
 			if (record.content === ip) {
-				console.log('[CFDNS] Skipping %s', domain)
+				console.log('[CFDNS] Skipping %s', name)
 				continue
 			}
-			console.log('[CFDNS] Updating record for %s', domain)
-			await setRecordIp(zone_id, record, ip, requestOpts)
+			console.log('[CFDNS] Updating record for %s', name)
+			await setRecordIp(zone_id, record, ip, requestOpts, entry)
 		} else {
-			console.log('[CFDNS] Creating new record for %s', domain)
-			await createRecord(zone_id, domain, ip, requestOpts)
+			console.log('[CFDNS] Creating new record for %s', name)
+			await createRecord(zone_id, name, ip, requestOpts, entry)
 		}
 	}
 }
