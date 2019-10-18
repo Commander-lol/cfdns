@@ -1,0 +1,7 @@
+{
+    "token": "",
+    "zone_id": "",
+    "hosts": [
+        { "domain": "dns.example.com" }
+    ]
+}

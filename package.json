@@ -1,0 +1,16 @@
+{
+  "name": "cfdns",
+  "version": "0.1.0",
+  "description": "Dynamic DNS With Cloudflare",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index"
+  },
+  "author": "Louis Capitanchik <contact@louiscap.co>",
+  "license": "GPL-3.0+",
+  "dependencies": {
+    "fs-jetpack": "^2.2.2",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.7"
+  }
+}
