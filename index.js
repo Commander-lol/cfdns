@@ -46,7 +46,7 @@ async function createRecord(zone_id, domain, ip, opts, ctx = {}) {
 		type: 'A',
 		name: domain,
 		content: ip,
-		proxies: true,
+		proxied: true,
 		...ctx,
 	}
 
